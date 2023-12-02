@@ -9,10 +9,10 @@ contract BetterDeployer is CommonBase {
     using Strings for uint256;
     string public deploymentsPath = "";
     string public deploymentFile = "";
-    string public constant BetterDeployerBanner = "BetterDeployer: ";
+    string public constant BETTER_DEPLOYER_BANNER = "BetterDeployer: ";
 
     function _log(string memory message) private pure returns (string memory) {
-        return string.concat(BetterDeployerBanner, message);
+        return string.concat(BETTER_DEPLOYER_BANNER, message);
     }
 
     mapping(string => address) public addressBook;
@@ -45,6 +45,11 @@ contract BetterDeployer is CommonBase {
         if (vm.isFile(path)) {
             fileContent = vm.readFile(path);
         }
+        string[] memory keys = vm.parseJsonKeys(fileContent, ".");
+        for (uint256 i = 0; i < keys.length; i++) {
+            string memory key = keys[i];
+            loadFromFile(key);
+        }
     }
 
     function loadFromFile(
@@ -54,19 +59,23 @@ contract BetterDeployer is CommonBase {
         if (bytes(fileContent).length == 0) {
             return address(0);
         }
-        try vm.parseJsonAddress(fileContent, string.concat(".", name)) returns (
+        return readKey(name);
+    }
+
+    function readKey(string memory key) private returns (address deployment) {
+        try vm.parseJsonAddress(fileContent, string.concat(".", key)) returns (
             address dep
         ) {
             deployment = dep;
+            recordAddress(key, deployment);
         } catch {
             deployment = address(0);
         }
-        recordAddress(name, deployment);
     }
 
     function getDefaultName() public returns (string memory) {
-        uint currTime = vm.unixTime();
-        string memory timestamp = string(abi.encodePacked(bytes32(currTime)));
+        uint256 currTime = vm.unixTime();
+        string memory timestamp = currTime.toString();
         return string.concat(timestamp, "_deployments.json");
     }
 
@@ -105,6 +114,7 @@ contract BetterDeployer is CommonBase {
         string memory artifact,
         bytes memory args
     ) public returns (address deployed) {
+        ensureFileContentLoaded();
         bytes memory bytecode = vm.getCode(artifact);
         bytes memory data = bytes.concat(bytecode, args);
         assembly {
@@ -126,6 +136,17 @@ contract BetterDeployer is CommonBase {
         return string.concat(deploymentsPath, "/", deploymentFile);
     }
 
+    function backupFilePath() public returns (string memory) {
+        return
+            string.concat(
+                deploymentsPath,
+                "/",
+                vm.unixTime().toString(),
+                "_",
+                deploymentFile
+            );
+    }
+
     function dump() public {
         string memory file = "addressBook";
         for (uint i = 0; i < deployments.length - 1; i++) {
@@ -140,5 +161,6 @@ contract BetterDeployer is CommonBase {
         );
 
         vm.writeJson(collected, deployFilePath());
+        vm.writeJson(collected, backupFilePath());
     }
 }

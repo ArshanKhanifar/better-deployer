@@ -9,7 +9,7 @@ contract ChainDeployer is BetterDeployer, BaseChainSetup {
         string memory chain,
         string memory deploymentName
     ) private returns (string memory) {
-        return string.concat(chain, ":", deploymentName);
+        return string.concat(chain, "_", deploymentName);
     }
 
     function deployChain(
