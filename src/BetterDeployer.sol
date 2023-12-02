@@ -7,15 +7,31 @@ import {Strings} from "openzeppelin-contracts/utils/Strings.sol";
 
 contract BetterDeployer is CommonBase {
     using Strings for uint256;
-    string public deploymentsPath;
-    string public deploymentFile;
+    string public deploymentsPath = "";
+    string public deploymentFile = "";
+    string public constant BetterDeployerBanner = "BetterDeployer: ";
+
+    function _log(string memory message) private pure returns (string memory) {
+        return string.concat(BetterDeployerBanner, message);
+    }
 
     mapping(string => address) public addressBook;
     string[] public deployments;
     string fileContent = "";
 
-    constructor(string memory _path, string memory _deploymentFile) {
+    function setPathAndFile(
+        string memory _path,
+        string memory _deploymentFile
+    ) public {
+        setDeploymentsPath(_path);
+        setDeploymentsFile(_deploymentFile);
+    }
+
+    function setDeploymentsPath(string memory _path) public {
         deploymentsPath = _path;
+    }
+
+    function setDeploymentsFile(string memory _deploymentFile) public {
         deploymentFile = (bytes(_deploymentFile).length == 0)
             ? getDefaultName()
             : _deploymentFile;
@@ -63,11 +79,13 @@ contract BetterDeployer is CommonBase {
         }
         if (deployed == address(0)) {
             revert(
-                string.concat(
-                    "No deployment found for ",
-                    deploymentName,
-                    "in file: ",
-                    deployFilePath()
+                _log(
+                    string.concat(
+                        "No deployment found for ",
+                        deploymentName,
+                        "in file: ",
+                        deployFilePath()
+                    )
                 )
             );
         }
@@ -93,12 +111,18 @@ contract BetterDeployer is CommonBase {
             deployed := create(0, add(data, 0x20), mload(data))
         }
         if (deployed == address(0)) {
-            revert(string.concat("Failed to deploy ", deploymentName));
+            revert(_log(string.concat("Failed to deploy ", deploymentName)));
         }
         recordAddress(deploymentName, deployed);
     }
 
     function deployFilePath() public view returns (string memory) {
+        if (
+            bytes(deploymentFile).length == 0 ||
+            bytes(deploymentFile).length == 0
+        ) {
+            revert(_log("deployment file not set"));
+        }
         return string.concat(deploymentsPath, "/", deploymentFile);
     }
 
@@ -118,9 +142,3 @@ contract BetterDeployer is CommonBase {
         vm.writeJson(collected, deployFilePath());
     }
 }
-
-// deploy script should just deploy the contract
-// get(name) should return the instance of that contract
-// there should be some configuration for pointing to the directory that contains the deployment
-// there should be a default directory called "latest"
-//

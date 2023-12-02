@@ -11,7 +11,8 @@ contract BetterDeployerTest is Test {
         string memory deployFolder = "deployments";
         string memory deployFile = "myDeployments.json";
 
-        BetterDeployer deployer1 = new BetterDeployer(deployFolder, deployFile);
+        BetterDeployer deployer1 = new BetterDeployer();
+        deployer1.setPathAndFile(deployFolder, deployFile);
         Carrot carrot = Carrot(
             deployer1.deploy("mycarrot", "Veggies.sol:Carrot", "")
         );
@@ -20,7 +21,8 @@ contract BetterDeployerTest is Test {
         );
         deployer1.dump();
         assertTrue(vm.isFile(deployer1.deployFilePath()));
-        BetterDeployer deployer2 = new BetterDeployer(deployFolder, deployFile);
+        BetterDeployer deployer2 = new BetterDeployer();
+        deployer2.setPathAndFile(deployFolder, deployFile);
 
         address carrot1 = deployer2.get("mycarrot");
         assertEq(carrot1, address(carrot));
