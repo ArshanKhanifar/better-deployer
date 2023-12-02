@@ -12,6 +12,7 @@ contract ChainDeployer is BetterDeployer, BaseChainSetup {
         bytes memory args
     ) public returns (address deployed) {
         switchTo(chain);
-        return deploy(string.concat(chain, deploymentName), artifact, args);
+        return
+            deploy(string.concat(chain, ":", deploymentName), artifact, args);
     }
 }
