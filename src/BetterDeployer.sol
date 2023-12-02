@@ -3,8 +3,10 @@ pragma solidity ^0.8.0;
 
 import {console2} from "forge-std/console2.sol";
 import {CommonBase} from "forge-std/Base.sol";
+import {Strings} from "openzeppelin-contracts/utils/Strings.sol";
 
 contract BetterDeployer is CommonBase {
+    using Strings for uint256;
     string public deploymentsPath;
     string public deploymentFile;
 

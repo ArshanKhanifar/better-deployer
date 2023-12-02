@@ -30,7 +30,6 @@ contract BetterDeployerTest is Test {
     }
 
     function testBetterDeployerNoFile() public {
-
         console2.log("current time", vm.unixTime());
         //string memory deployFolder = "deployments";
         //string memory deployFile = "";
