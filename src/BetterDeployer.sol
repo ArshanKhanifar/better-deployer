@@ -10,9 +10,14 @@ contract BetterDeployer is CommonBase {
     string public deploymentsPath = "";
     string public deploymentFile = "";
     string public constant BETTER_DEPLOYER_BANNER = "BetterDeployer: ";
+    bool skipFile = false;
 
     function _log(string memory message) private pure returns (string memory) {
         return string.concat(BETTER_DEPLOYER_BANNER, message);
+    }
+
+    function setSkipFile(bool _skipFile) public {
+        skipFile = _skipFile;
     }
 
     mapping(string => address) public addressBook;
@@ -38,7 +43,7 @@ contract BetterDeployer is CommonBase {
     }
 
     function ensureFileContentLoaded() public {
-        if (bytes(fileContent).length > 0) {
+        if (bytes(fileContent).length > 0 || skipFile) {
             return;
         }
         string memory path = deployFilePath();
@@ -148,6 +153,9 @@ contract BetterDeployer is CommonBase {
     }
 
     function dump() public {
+        if (skipFile) {
+            return;
+        }
         string memory file = "addressBook";
         for (uint i = 0; i < deployments.length - 1; i++) {
             string memory key = deployments[i];
