@@ -5,6 +5,13 @@ import {BetterDeployer} from "./BetterDeployer.sol";
 import {BaseChainSetup} from "arshans-forge-toolkit/BaseChainSetup.sol";
 
 contract ChainDeployer is BetterDeployer, BaseChainSetup {
+    function _name(
+        string memory chain,
+        string memory deploymentName
+    ) private returns (string memory) {
+        return string.concat(chain, ":", deploymentName);
+    }
+
     function deployChain(
         string memory chain,
         string memory deploymentName,
@@ -12,7 +19,13 @@ contract ChainDeployer is BetterDeployer, BaseChainSetup {
         bytes memory args
     ) public returns (address deployed) {
         switchTo(chain);
-        return
-            deploy(string.concat(chain, ":", deploymentName), artifact, args);
+        return deploy(_name(chain, deploymentName), artifact, args);
+    }
+
+    function getDeployment(
+        string memory chain,
+        string memory deploymentName
+    ) public returns (address) {
+        return getDeployment(_name(chain, deploymentName));
     }
 }

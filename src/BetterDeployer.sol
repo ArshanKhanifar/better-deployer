@@ -70,7 +70,7 @@ contract BetterDeployer is CommonBase {
         return string.concat(timestamp, "_deployments.json");
     }
 
-    function get(
+    function getDeployment(
         string memory deploymentName
     ) public returns (address deployed) {
         deployed = addressBook[deploymentName];
