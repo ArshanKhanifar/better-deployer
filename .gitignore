@@ -9,6 +9,7 @@ out/
 
 # Docs
 docs/
+deployments
 
 # Dotenv file
 .env
