@@ -49,6 +49,8 @@ contract BetterDeployer is CommonBase {
         string memory path = deployFilePath();
         if (vm.isFile(path)) {
             fileContent = vm.readFile(path);
+        } else {
+            fileContent = "{}";
         }
         string[] memory keys = vm.parseJsonKeys(fileContent, ".");
         for (uint256 i = 0; i < keys.length; i++) {
