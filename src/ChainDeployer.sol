@@ -2,9 +2,8 @@
 pragma solidity ^0.8.0;
 
 import {BetterDeployer} from "./BetterDeployer.sol";
-import {BaseChainSetup} from "arshans-forge-toolkit/BaseChainSetup.sol";
 
-contract ChainDeployer is BetterDeployer, BaseChainSetup {
+contract ChainDeployer is BetterDeployer {
     function _name(
         string memory chain,
         string memory deploymentName
