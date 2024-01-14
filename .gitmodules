@@ -6,4 +6,4 @@
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
 [submodule "lib/forge-toolkit"]
 	path = lib/forge-toolkit
-	url = https://github.com/decentxyz/forge-toolkit
+	url = https://github.com/arshankhanifar/forge-toolkit
