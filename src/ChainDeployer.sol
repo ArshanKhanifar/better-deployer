@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {BetterDeployer} from "./BetterDeployer.sol";
-import {BaseChainSetup} from "forge-toolkit/BaseChainSetup.sol";
+import {BaseChainSetup} from "queso/BaseChainSetup.sol";
 
 contract ChainDeployer is BetterDeployer, BaseChainSetup {
     function _name(
