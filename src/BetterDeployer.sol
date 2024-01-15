@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 
 import {console2} from "forge-std/console2.sol";
 import {CommonBase} from "forge-std/Base.sol";
-import {Strings} from "openzeppelin-contracts/utils/Strings.sol";
+import {LibString} from "solady/utils/LibString.sol";
 
 /// @title BetterDeployer
 /// @notice A contract that can deploy other contracts and keep track of them
 contract BetterDeployer is CommonBase {
-    using Strings for uint256;
+    using LibString for uint256;
 
     /// @notice The path to the directory where the deployment files are stored
     string public deploymentsPath = "";
@@ -131,6 +131,16 @@ contract BetterDeployer is CommonBase {
         deployments.push(deploymentName);
     }
 
+    /// @notice deploys a contract and records its address, same as deploy(string, string, bytes) but
+    /// with no constructor arguments.
+    /// @param deploymentName The name of the deployment
+    /// @param artifact The name of the artifact to deploy
+    /// @return deployed The address of the deployed contract
+    /// @dev this function is here to make it easier to deploy contracts
+    function deploy(string memory deploymentName, string memory artifact) public returns (address deployed) {
+        return deploy(deploymentName, artifact, "");
+    }
+
     /// @notice deploys a contract and records its address
     /// @param deploymentName The name of the deployment
     /// @param artifact The name of the artifact to deploy
@@ -143,7 +153,7 @@ contract BetterDeployer is CommonBase {
         ensureFileContentLoaded();
         bytes memory bytecode = vm.getCode(artifact);
         bytes memory data = bytes.concat(bytecode, args);
-        assembly {
+        assembly ("memory-safe") {
             deployed := create(0, add(data, 0x20), mload(data))
         }
         if (deployed == address(0)) {
