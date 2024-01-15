@@ -8,7 +8,6 @@ out/
 /broadcast/**/dry-run/
 
 # Docs
-docs/
 deployments
 
 # Dotenv file
