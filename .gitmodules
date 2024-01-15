@@ -7,3 +7,6 @@
 [submodule "lib/queso"]
 	path = lib/queso
 	url = https://github.com/arshankhanifar/queso
+[submodule "lib/solady"]
+	path = lib/solady
+	url = https://github.com/vectorized/solady
