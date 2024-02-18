@@ -1,4 +1,4 @@
-![docs](https://github.com/arshankhanifar/better-deployer/actions/workflows/mdbook.yaml/badge.svg)
+![docs](https://github.com/arshankhanifar/better-deployer/actions/workflows/mdbook.yml/badge.svg)
 
 # Better Deployer
 
